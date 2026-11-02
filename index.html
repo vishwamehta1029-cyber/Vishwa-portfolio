@@ -47,8 +47,12 @@ p{margin:0}
 @media (max-width:640px){.nav ul .opt{display:none}}
 
 /* hero */
-.hero .wrap{display:grid;grid-template-columns:minmax(0,640px);gap:48px;padding-block:clamp(56px,13vh,150px) clamp(48px,9vh,110px)}
-.who h1{font-size:clamp(38px,4.2vw,56px);color:var(--ink);line-height:1.08}
+.hero .wrap{display:grid;grid-template-columns:minmax(0,1fr);gap:48px;padding-block:clamp(56px,13vh,150px) clamp(48px,9vh,110px)}
+.who h1{font-size:clamp(40px,5.65vw,90px);width:min(75vw,100%);color:var(--ink);line-height:1.02}
+.who h1 .rot{min-height:1.15em}
+.who h1 .rot .w{white-space:nowrap}
+.who .exp,.who .say-hero{max-width:640px}
+@media (max-width:900px){.who h1{width:100%;font-size:clamp(38px,9vw,64px)}.who h1 .rot{min-height:2.2em}.who h1 .rot .w{white-space:normal}}
 .who h1 .nm{color:var(--accent)}
 .rot{display:block;max-width:100%;overflow:hidden;padding-bottom:.1em;min-height:2.3em}
 .rot .w{display:inline-block;font-family:var(--serif);font-style:italic;font-size:1em;line-height:1.08;color:var(--ink);letter-spacing:-0.01em;transition:transform .4s cubic-bezier(.2,.7,.2,1),opacity .4s ease}
