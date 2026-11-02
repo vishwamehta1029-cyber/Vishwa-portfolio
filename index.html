@@ -34,7 +34,7 @@ h1,h2,h3{margin:0;font-family:var(--serif);font-weight:400;letter-spacing:-0.025
 p{margin:0}
 .wrap{max-width:1440px;margin:0 auto;padding-left:var(--gl);padding-right:var(--gr)}
 
-/* nav (slides in after hero) */
+/* nav (always visible) */
 .nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:color-mix(in srgb,var(--bg) 90%,transparent);backdrop-filter:blur(12px);transition:transform .35s ease, opacity .35s ease}
 .nav.hide{transform:translateY(-110%);opacity:0;pointer-events:none}
 .nav .wrap{display:flex;justify-content:space-between;align-items:center;gap:16px;padding-block:18px}
@@ -467,7 +467,7 @@ section{scroll-margin-top:84px}
 @media (max-width:820px){.ruler{display:none}}
 </style>
 
-<nav class="nav hide" id="nav" aria-label="Primary">
+<nav class="nav" id="nav" aria-label="Primary">
   <div class="wrap">
     <a class="logo" href="#top">vishwa</a>
     <ul>
@@ -847,10 +847,6 @@ section{scroll-margin-top:84px}
   requestAnimationFrame(tick);
 })();
 
-/* ---------- nav reveal ---------- */
-const nav = document.getElementById('nav');
-new IntersectionObserver(([e]) => nav.classList.toggle('hide', e.isIntersecting), {rootMargin:'-80px 0px 0px 0px'})
-  .observe(document.querySelector('.hero .who h1'));
 
 /* ---------- theme toggle ---------- */
 const root = document.documentElement;
