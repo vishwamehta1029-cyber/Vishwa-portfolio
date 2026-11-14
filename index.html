@@ -115,6 +115,9 @@ section{scroll-margin-top:84px}
 
 /* work grid */
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:40px 40px}
+.card.wide{grid-column:1/-1}
+.visual.vid{aspect-ratio:16/9;background:#FBFBFA}
+.visual.vid video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
 @media (max-width:820px){.grid{grid-template-columns:1fr}}
 .card{display:block;text-align:left;width:calc(100% + 48px);margin:-24px;padding:24px;border-radius:26px;transition:background .25s ease}
 .card:hover,.card:focus-visible{background:var(--mint)}
@@ -552,6 +555,12 @@ section{scroll-margin-top:84px}
       <h2 class="title">Problem statements I have worked on</h2>
       <div class="grid">
 
+        <button class="card wide" type="button" data-case="jamie" aria-label="Open case study: Jamie">
+          <div class="visual vid"><video src="/assets/jamie-demo.mp4" poster="/assets/jamie-poster.webp" muted loop playsinline preload="metadata" aria-label="Jamie walkthrough video"></video></div>
+          <div class="meta"><div><p class="q">Can I build an AI agent that applies to jobs, finds the right people, and gets smarter with every task?</p></div>
+            <svg class="ex" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M14 4h6v6M10 20H4v-6"/></svg></div>
+        </button>
+
         <button class="card" type="button" data-case="relay" aria-label="Open case study: Relay">
           <div class="visual" data-tv="relay"></div>
           <div class="meta"><div><p class="q">How do I automate the process of shortlisting quality leads and emailing them?</p></div>
@@ -806,7 +815,7 @@ section{scroll-margin-top:84px}
       </div>
       <div class="row">
         <a class="pill" href="https://www.linkedin.com/in/vishwa10" target="_blank" rel="noopener">LinkedIn ↗</a>
-        <a class="pill" href="https://github.com/vishwamehtacyber1029" target="_blank" rel="noopener">GitHub ↗</a>
+        <a class="pill" href="https://github.com/vishwamehta1029-cyber" target="_blank" rel="noopener">GitHub ↗</a>
         <a class="pill" href="https://lnkd.in/p/gUpQaAH8" target="_blank" rel="noopener">Matchstick demo ↗</a>
       </div>
     </div>
@@ -1086,9 +1095,22 @@ function mountThumb(vis, key) {
   tvIO.observe(tv);
 }
 document.querySelectorAll('.card .visual[data-tv]').forEach(v => mountThumb(v, v.dataset.tv));
+const vidIO = new IntersectionObserver(es => es.forEach(e => { const v = e.target; if (e.isIntersecting && !reducedMotion) v.play().catch(() => {}); else v.pause(); }), { threshold: .35 });
+document.querySelectorAll('.card .visual.vid video').forEach(v => { v.muted = true; vidIO.observe(v); });
 
 /* ---------- case studies ---------- */
 const C = {
+  jamie: {
+    title: 'Jamie', meta: 'Personal build<br>AI agent<br>2026',
+    sub: 'An AI agent that learns as it goes. His first job is my job search.',
+    built: 'Jamie is a remote MCP server with a shared brain, so Claude and ChatGPT both connect to the same Jamie. He works through my saved jobs, finds the right people, and drafts outreach in my voice. A Claude skill tells him how to do the work, and every action that matters waits for my yes.',
+    parts: ['Remote MCP server in TypeScript', 'Shared brain in Neon Postgres', 'Claude skill for the workflow', 'Works in Claude and ChatGPT', 'Gmail drafts, send on approval', 'Bounce checks, Apollo as last resort'],
+    frame: 'Less like a tool, <mark>more like a person.</mark>',
+    nums: [['45 / day', 'hard cap on mass applications'], ['250 / day', 'hard cap on emails']],
+    why: 'Every fact I give him, every answer I approve, and every lesson from a task gets saved, so each session starts smarter. Guardrails live in the skill and the server, not left to judgment: nothing is submitted or sent without my yes.',
+    stack: ['TypeScript', 'MCP', 'Claude', 'ChatGPT', 'Neon Postgres', 'Gmail', 'Vercel'],
+    link: ['View the code on GitHub ↗', 'https://github.com/vishwamehta1029-cyber/jamie-agent']
+  },
   relay: {
     title: 'Relay', meta: 'Forward Deployed Engineer<br>Profundity Group<br>Jul 2026 to present',
     sub: 'An agentic outreach system that runs a six-step sales workflow end to end, with a person on the send button.',
@@ -1180,12 +1202,14 @@ function openCase(key, card) {
     ${codeSection(key)}`;
   cin.querySelector('.cvis').appendChild(vis);
   if (vis.dataset.tv) mountThumb(vis, vis.dataset.tv);
+  const cv = vis.querySelector('video'); if (cv) { cv.muted = true; cv.controls = true; cv.currentTime = 0; cv.play().catch(() => {}); }
   box.hidden = false; root.style.overflow = 'hidden'; sheet.scrollTop = 0; onScroll();
   document.getElementById('closeBtn').focus();
   if (location.hash !== '#' + key) history.replaceState(null, '', '#' + key);
 }
 function closeCase() {
   box.hidden = true; root.style.overflow = '';
+  const ov = cin.querySelector('video'); if (ov) ov.pause();
   history.replaceState(null, '', location.pathname + location.search);
   if (lastCard) lastCard.focus();
 }
