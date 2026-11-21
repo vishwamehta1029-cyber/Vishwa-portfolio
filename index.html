@@ -623,7 +623,7 @@ section{scroll-margin-top:84px}
           <span class="fill" id="tlFill"></span>
 
           <article class="chap active">
-            <div class="chap-text">
+            <div class="chap-text" data-stylist-chap="1">
             <div class="hd"><img class="node first" src="/assets/26920bbcaa64.webp" alt="University of South Florida logo"><div><span class="org">University of South Florida</span><span class="when">Graduated December 2025</span></div></div>
             <h3>B.S. Quantitative Economics &amp; Econometrics, B.A. Psychology</h3>
             </div>
@@ -655,7 +655,7 @@ section{scroll-margin-top:84px}
             </svg></div>
           </article>
           <article class="chap">
-            <div class="chap-text">
+            <div class="chap-text" data-stylist-chap="2">
             <div class="hd"><img class="node" src="/assets/394e753dc3f3.webp" alt="Culminate Strategy Group logo"><div><span class="org">Culminate Strategy Group</span><span class="when">Analytics intern to Data Analyst · Jan 2025 to Jul 2026</span></div></div>
             <h3>Spent my time automating my own job</h3>
             <p class="say">As an analyst, I spent most days drafting personalized, well-designed reports and structuring datasets for ML models.</p>
@@ -690,7 +690,7 @@ section{scroll-margin-top:84px}
             </svg></div>
           </article>
           <article class="chap">
-            <div class="chap-text">
+            <div class="chap-text" data-stylist-chap="3">
             <div class="hd"><img class="node" src="/assets/3a836745c550.webp" alt="Curiouser.AI logo"><div><span class="org">Curiouser.AI</span><span class="when">Business Intelligence Analyst Intern · May to Aug 2025</span></div></div>
             <h3>Learned firsthand what goes into building an AI company</h3>
             <p class="say">I saw what it takes to build an AI company: marketing, operations, backend, and fundraising.</p>
@@ -726,7 +726,7 @@ section{scroll-margin-top:84px}
             </svg></div>
           </article>
           <article class="chap">
-            <div class="chap-text">
+            <div class="chap-text" data-stylist-chap="4">
             <div class="hd"><img class="node" src="/assets/0f86efb7a780.webp" alt="Profundity Group logo"><div><span class="org">Profundity Group · Supply chain consulting</span><span class="when">Forward Deployed AI Engineer · Jul 2026 to present</span></div></div>
             <h3>Zero to one, every hat</h3>
             <p class="say">I joined to bring AI-first problem solving to a consulting firm. We're in the 0-to-1 phase, so my scope stretched far past my title. That's what I love about startups: pick a problem, own it end to end.</p>
@@ -1154,6 +1154,40 @@ const C = {
     link: ['Watch the demo ↗', 'https://lnkd.in/p/gUpQaAH8']
   }
 };
+
+/* ---------- Stylist: approved updates from Jamie. The text above stays as the built-in backup. ---------- */
+fetch('https://jamie-mcp.vercel.app/public/portfolio.json', { cache: 'no-store' })
+  .then(r => (r.ok ? r.json() : null))
+  .then(d => {
+    if (!d) return;
+    const esc = t => String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    for (const [k, v] of Object.entries(d.cases || {})) C[k] = Object.assign(C[k] || {}, v);
+    for (const [k, q] of Object.entries(d.cards || {})) {
+      const el = document.querySelector(`.card[data-case="${k}"] .q`);
+      if (el && typeof q === 'string') el.innerHTML = q;
+    }
+    for (const [n, ch] of Object.entries(d.chapters || {})) {
+      const root = document.querySelector(`[data-stylist-chap="${n}"]`);
+      if (!root || !ch) continue;
+      const set = (sel, v) => { const el = root.querySelector(sel); if (el && typeof v === 'string') el.innerHTML = v; };
+      set('.org', ch.org); set('.when', ch.when); set('h3', ch.h3);
+      if (Array.isArray(ch.say)) {
+        root.querySelectorAll('p.say').forEach(p => p.remove());
+        let after = root.querySelector('h3');
+        for (const t of ch.say) { const p = document.createElement('p'); p.className = 'say'; p.innerHTML = t; after.after(p); after = p; }
+      }
+      if (Array.isArray(ch.chips)) {
+        let box = root.querySelector('.chips');
+        if (!ch.chips.length) { if (box) box.remove(); }
+        else {
+          if (!box) { box = document.createElement('div'); box.className = 'chips'; root.appendChild(box); }
+          box.innerHTML = ch.chips.map(c => `<span>${esc(c)}</span>`).join('');
+        }
+      }
+    }
+  })
+  .catch(() => {});
+
 const box = document.getElementById('case'), sheet = document.getElementById('sheet'), cin = document.getElementById('cin'), mk = document.getElementById('mk');
 let lastCard = null;
 
